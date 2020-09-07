@@ -1,26 +1,29 @@
 import React, { useState } from "react";
-import films from "../helpers/filmsData";
 
 import {
+  ActivityIndicator,
   View,
   TextInput,
   Button,
   StyleSheet,
   FlatList,
-  Text,
 } from "react-native";
 import FilmItem from "./FilmItem";
 import TMDApi from "../Services/TMDApi";
 
 const Search = () => {
   const [movies, setMovies] = useState([]);
+  const [loading, setLoading] = useState(false);
+
   let searchedText = "";
 
   const _loadFilms = async () => {
     if (searchedText.length > 0) {
+      setLoading(true);
       try {
         const data = await TMDApi.getFilmsFromApiWithSearchedText(searchedText);
         setMovies(data.results);
+        setLoading(false);
       } catch (error) {
         console.log("impossible de charger les films");
       }
@@ -30,16 +33,16 @@ const Search = () => {
   const handleSearch = (text) => {
     searchedText = text;
   };
-
-  console.log("RENDER");
-
+  console.log(loading);
   return (
     <View style={styles.main_container}>
       <TextInput
         style={styles.textinput}
         placeholder="Titre du film"
         onChangeText={handleSearch}
+        onSubmitEditing={_loadFilms}
       />
+
       <Button
         style={styles.searchBtn}
         color="#FF0010"
@@ -51,6 +54,12 @@ const Search = () => {
         keyExtractor={(item) => item.id.toString()}
         renderItem={({ item }) => <FilmItem film={item} />}
       />
+
+      {loading ? (
+        <View style={styles.loading_container}>
+          <ActivityIndicator size="large" />
+        </View>
+      ) : null}
     </View>
   );
 };
@@ -67,6 +76,15 @@ const styles = StyleSheet.create({
     borderColor: "#000000",
     borderWidth: 1,
     paddingLeft: 5,
+  },
+  loading_container: {
+    position: "absolute",
+    left: 0,
+    right: 0,
+    top: 100,
+    bottom: 0,
+    alignItems: "center",
+    justifyContent: "center",
   },
 });
 

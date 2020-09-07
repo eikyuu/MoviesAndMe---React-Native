@@ -2,9 +2,15 @@ import React from "react";
 import { StyleSheet, View, Text, Image } from "react-native";
 
 const FilmItem = ({ film }) => {
+  const getImageFromApi = (name) => {
+    return "https://image.tmdb.org/t/p/w300" + name;
+  };
   return (
     <View style={styles.main_container}>
-      <Image style={styles.image} source={{ uri: "image" }} />
+      <Image
+        style={styles.image}
+        source={{ uri: getImageFromApi(film.poster_path) }}
+      />
       <View style={styles.content_container}>
         <View style={styles.header_container}>
           <Text style={styles.title_text}>{film.title}</Text>
