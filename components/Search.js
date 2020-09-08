@@ -1,5 +1,4 @@
-import React, { useState } from "react";
-
+import React, { useState, useEffect } from "react";
 import {
   ActivityIndicator,
   View,
@@ -14,14 +13,21 @@ import TMDApi from "../Services/TMDApi";
 const Search = () => {
   const [movies, setMovies] = useState([]);
   const [loading, setLoading] = useState(false);
-
+  const [totalPages, setTotalPages] = useState(0);
+  const [page, setPage] = useState(0);
   let searchedText = "";
 
   const _loadFilms = async () => {
     if (searchedText.length > 0) {
       setLoading(true);
       try {
-        const data = await TMDApi.getFilmsFromApiWithSearchedText(searchedText);
+        const data = await TMDApi.getFilmsFromApiWithSearchedText(
+          searchedText,
+          page + 1
+        );
+        setPage(data.page);
+
+        setTotalPages(data.total_pages);
         setMovies(data.results);
         setLoading(false);
       } catch (error) {
@@ -33,7 +39,7 @@ const Search = () => {
   const handleSearch = (text) => {
     searchedText = text;
   };
-  console.log(loading);
+
   return (
     <View style={styles.main_container}>
       <TextInput
@@ -47,12 +53,18 @@ const Search = () => {
         style={styles.searchBtn}
         color="#FF0010"
         title="Rechercher"
-        onPress={(text) => _loadFilms(text)}
+        onPress={_loadFilms}
       />
       <FlatList
         data={movies}
         keyExtractor={(item) => item.id.toString()}
         renderItem={({ item }) => <FilmItem film={item} />}
+        onEndReachedThreshold={0.5}
+        onEndReached={() => {
+          if (page < totalPages) {
+            _loadFilms();
+          }
+        }}
       />
 
       {loading ? (
@@ -67,7 +79,7 @@ const Search = () => {
 const styles = StyleSheet.create({
   main_container: {
     flex: 1,
-    marginTop: 30,
+    marginTop: 50,
     marginLeft: 5,
     marginRight: 5,
   },
