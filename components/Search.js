@@ -1,80 +1,97 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import {
-  ActivityIndicator,
+  StyleSheet,
   View,
   TextInput,
   Button,
-  StyleSheet,
+  Text,
   FlatList,
+  ActivityIndicator,
 } from "react-native";
 import FilmItem from "./FilmItem";
-import TMDApi from "../Services/TMDApi";
+import { getFilmsFromApiWithSearchedText } from "../Services/TMDApi";
 
-const Search = () => {
-  const [movies, setMovies] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [totalPages, setTotalPages] = useState(0);
-  const [page, setPage] = useState(0);
-  let searchedText = "";
+class Search extends React.Component {
+  constructor(props) {
+    super(props);
+    this.searchedText = "";
+    this.page = 0;
+    this.totalPages = 0;
+    this.state = {
+      films: [],
+      isLoading: false,
+    };
+  }
 
-  const _loadFilms = async () => {
-    if (searchedText.length > 0) {
-      setLoading(true);
-      try {
-        const data = await TMDApi.getFilmsFromApiWithSearchedText(
-          searchedText,
-          page + 1
-        );
-        setPage(data.page);
-
-        setTotalPages(data.total_pages);
-        setMovies(data.results);
-        setLoading(false);
-      } catch (error) {
-        console.log("impossible de charger les films");
-      }
+  _loadFilms() {
+    if (this.searchedText.length > 0) {
+      this.setState({ isLoading: true });
+      getFilmsFromApiWithSearchedText(this.searchedText, this.page + 1).then(
+        (data) => {
+          this.page = data.page;
+          this.totalPages = data.total_pages;
+          this.setState({
+            films: [...this.state.films, ...data.results],
+            isLoading: false,
+          });
+        }
+      );
     }
-  };
+  }
 
-  const handleSearch = (text) => {
-    searchedText = text;
-  };
+  _searchTextInputChanged(text) {
+    this.searchedText = text;
+  }
 
-  return (
-    <View style={styles.main_container}>
-      <TextInput
-        style={styles.textinput}
-        placeholder="Titre du film"
-        onChangeText={handleSearch}
-        onSubmitEditing={_loadFilms}
-      />
+  _searchFilms() {
+    this.page = 0;
+    this.totalPages = 0;
+    this.setState(
+      {
+        films: [],
+      },
+      () => {
+        this._loadFilms();
+      }
+    );
+  }
 
-      <Button
-        style={styles.searchBtn}
-        color="#FF0010"
-        title="Rechercher"
-        onPress={_loadFilms}
-      />
-      <FlatList
-        data={movies}
-        keyExtractor={(item) => item.id.toString()}
-        renderItem={({ item }) => <FilmItem film={item} />}
-        onEndReachedThreshold={0.5}
-        onEndReached={() => {
-          if (page < totalPages) {
-            _loadFilms();
-          }
-        }}
-      />
-
-      {loading ? (
+  _displayLoading() {
+    if (this.state.isLoading) {
+      return (
         <View style={styles.loading_container}>
           <ActivityIndicator size="large" />
         </View>
-      ) : null}
-    </View>
-  );
-};
+      );
+    }
+  }
+
+  render() {
+    return (
+      <View style={styles.main_container}>
+        <TextInput
+          style={styles.textinput}
+          placeholder="Titre du film"
+          onChangeText={(text) => this._searchTextInputChanged(text)}
+          onSubmitEditing={() => this._searchFilms()}
+        />
+        <Button title="Rechercher" onPress={() => this._searchFilms()} />
+        <FlatList
+          data={this.state.films}
+          keyExtractor={(item) => item.id.toString()}
+          renderItem={({ item }) => <FilmItem film={item} />}
+          onEndReachedThreshold={0.5}
+          onEndReached={() => {
+            if (this.page < this.totalPages) {
+              this._loadFilms();
+            }
+          }}
+        />
+        {this._displayLoading()}
+      </View>
+    );
+  }
+}
 
 const styles = StyleSheet.create({
   main_container: {
