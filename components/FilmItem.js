@@ -1,12 +1,16 @@
 import React from "react";
 import { StyleSheet, View, Text, Image } from "react-native";
+import { TouchableOpacity } from "react-native-gesture-handler";
 
-const FilmItem = ({ film }) => {
+const FilmItem = ({ film, displayDetailForFilm }) => {
   const getImageFromApi = (name) => {
     return "https://image.tmdb.org/t/p/w300" + name;
   };
   return (
-    <View style={styles.main_container}>
+    <TouchableOpacity
+      style={styles.main_container}
+      onPress={() => displayDetailForFilm(film.id)}
+    >
       <Image
         style={styles.image}
         source={{ uri: getImageFromApi(film.poster_path) }}
@@ -25,7 +29,7 @@ const FilmItem = ({ film }) => {
           <Text style={styles.date_text}>Sorti le {film.release_date}</Text>
         </View>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 };
 
