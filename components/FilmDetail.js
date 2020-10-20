@@ -46,8 +46,6 @@ const FilmDetail = ({ route }) => {
               uri: "https://image.tmdb.org/t/p/original" + film.backdrop_path,
             }}
           />
-          <Text style={styles.title}>{film.title}</Text>
-          <Text style={styles.overview}>{film.overview}</Text>
           <Text style={styles.title_text}>{film.title}</Text>
           <Text style={styles.description_text}>{film.overview}</Text>
           <Text style={styles.default_text}>
@@ -63,7 +61,7 @@ const FilmDetail = ({ route }) => {
             Budget : {numeral(film.budget).format("0,0[.]00 $")}
           </Text>
           <Text style={styles.default_text}>
-            Genre(s) :{" "}
+            Genre(s) :
             {film.genres
               .map(function (genre) {
                 return genre.name;
@@ -71,7 +69,7 @@ const FilmDetail = ({ route }) => {
               .join(" / ")}
           </Text>
           <Text style={styles.default_text}>
-            Companie(s) :{" "}
+            Companie(s) :
             {film.production_companies
               .map(function (company) {
                 return company.name;
@@ -111,7 +109,7 @@ const styles = StyleSheet.create({
     height: 169,
     margin: 5,
   },
-  title: {
+  title_text: {
     textAlign: "center",
     fontWeight: "bold",
     fontSize: 35,
@@ -123,11 +121,16 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     color: "#000000",
   },
-  overview: {
+  description_text: {
     fontStyle: "italic",
     color: "#666666",
     margin: 5,
     marginBottom: 15,
+  },
+  default_text: {
+    marginLeft: 5,
+    marginRight: 5,
+    marginTop: 5,
   },
 });
 
