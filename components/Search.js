@@ -9,7 +9,7 @@ import {
   ActivityIndicator,
 } from "react-native";
 import FilmItem from "./FilmItem";
-import { getFilmsFromApiWithSearchedText } from "../Services/TMDApi";
+import { getFilmsFromApiWithSearchedText } from "../services/TMDApi";
 
 class Search extends React.Component {
   constructor(props) {
@@ -67,7 +67,6 @@ class Search extends React.Component {
   }
 
   _displayDetailForFilm = (idFilm) => {
-    console.log("Display film with id " + idFilm);
     this.props.navigation.navigate("Film Detail", { idFilm: idFilm });
   };
 

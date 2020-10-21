@@ -3,7 +3,8 @@ import numeral from "numeral";
 import React, { useEffect, useState } from "react";
 import { ActivityIndicator, Image, StyleSheet, Text, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
-import { getFilmDetailFromApi } from "../Services/TMDApi";
+import { getFilmDetailFromApi } from "../services/TMDApi";
+import { connect } from "react-redux";
 
 const FilmDetail = ({ route }) => {
   const [isLoading, setIsLoading] = useState(true);
@@ -16,7 +17,6 @@ const FilmDetail = ({ route }) => {
       const data = await getFilmDetailFromApi(id);
       setFilm(data);
       setIsLoading(false);
-      console.log(data);
     } catch (error) {
       console.log("erreur");
     }
@@ -134,4 +134,10 @@ const styles = StyleSheet.create({
   },
 });
 
-export default FilmDetail;
+const mapStateToProps = (state) => {
+  return {
+    favoritesFilm: state.favoritesFilm,
+  };
+};
+
+export default connect(mapStateToProps)(FilmDetail);

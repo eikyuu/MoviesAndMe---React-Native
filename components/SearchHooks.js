@@ -8,7 +8,7 @@
 //   FlatList,
 // } from "react-native";
 // import FilmItem from "./FilmItem";
-// import TMDApi from "../Services/TMDApi";
+// import TMDApi from "../services/TMDApi";
 
 // const Search = () => {
 //   const [movies, setMovies] = useState([]);
