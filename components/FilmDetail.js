@@ -2,11 +2,11 @@ import moment from "moment";
 import numeral from "numeral";
 import React, { useEffect, useState } from "react";
 import { ActivityIndicator, Image, StyleSheet, Text, View } from "react-native";
-import { ScrollView } from "react-native-gesture-handler";
+import { ScrollView, TouchableOpacity } from "react-native-gesture-handler";
 import { getFilmDetailFromApi } from "../services/TMDApi";
 import { connect } from "react-redux";
 
-const FilmDetail = ({ route }) => {
+const FilmDetail = ({ dispatch, route, favoritesFilm }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [film, setFilm] = useState(undefined);
 
@@ -25,6 +25,15 @@ const FilmDetail = ({ route }) => {
   useEffect(() => {
     _loadFilm(id);
   }, [id]);
+
+  const _displayFavoriteImage = () => {
+    let sourceImage = require("../images/ic_favorite_border.png");
+    if (favoritesFilm.findIndex((item) => item.id === film.id) !== -1) {
+      // Film dans nos favoris
+      sourceImage = require("../images/ic_favorite.png");
+    }
+    return <Image style={styles.favorite_image} source={sourceImage} />;
+  };
 
   const _displayLoading = () => {
     if (isLoading) {
@@ -47,6 +56,12 @@ const FilmDetail = ({ route }) => {
             }}
           />
           <Text style={styles.title_text}>{film.title}</Text>
+          <TouchableOpacity
+            style={styles.favorite_container}
+            onPress={() => dispatch({ type: "TOGGLE_FAVORITE", value: film })}
+          >
+            {_displayFavoriteImage()}
+          </TouchableOpacity>
           <Text style={styles.description_text}>{film.overview}</Text>
           <Text style={styles.default_text}>
             Sorti le {moment(new Date(film.release_date)).format("DD/MM/YYYY")}
@@ -131,6 +146,14 @@ const styles = StyleSheet.create({
     marginLeft: 5,
     marginRight: 5,
     marginTop: 5,
+  },
+  favorite_container: {
+    alignItems: "center",
+  },
+
+  favorite_image: {
+    width: 40,
+    height: 40,
   },
 });
 
