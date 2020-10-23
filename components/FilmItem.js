@@ -2,10 +2,22 @@ import React from "react";
 import { StyleSheet, View, Text, Image } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 
-const FilmItem = ({ film, displayDetailForFilm }) => {
+const FilmItem = ({ film, displayDetailForFilm, isFilmFavorite }) => {
   const getImageFromApi = (name) => {
     return "https://image.tmdb.org/t/p/w300" + name;
   };
+
+  const _displayFavoriteImage = () => {
+    if (isFilmFavorite) {
+      return (
+        <Image
+          style={styles.favorite_image}
+          source={require("../images/ic_favorite.png")}
+        />
+      );
+    }
+  };
+  console.log(isFilmFavorite);
   return (
     <TouchableOpacity
       style={styles.main_container}
@@ -17,6 +29,7 @@ const FilmItem = ({ film, displayDetailForFilm }) => {
       />
       <View style={styles.content_container}>
         <View style={styles.header_container}>
+          {_displayFavoriteImage()}
           <Text style={styles.title_text}>{film.title}</Text>
           <Text style={styles.vote_text}>{film.vote_average}</Text>
         </View>
@@ -77,6 +90,11 @@ const styles = StyleSheet.create({
   date_text: {
     textAlign: "right",
     fontSize: 14,
+  },
+  favorite_image: {
+    width: 25,
+    height: 25,
+    marginRight: 5,
   },
 });
 
