@@ -2,7 +2,9 @@ import { createStackNavigator } from "@react-navigation/stack";
 import Search from "../Search";
 import React from "react";
 import FilmDetail from "../FilmDetail";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
+const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 function Navigation() {
   return (
