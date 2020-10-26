@@ -12,7 +12,7 @@ const StackingSearch = () => {
   return (
     <Stack.Navigator>
       <Stack.Screen name="Rechercher" component={Search} />
-      <Stack.Screen name="Film Detail" component={FilmDetail} />
+      <Stack.Screen name="Film Details" component={FilmDetail} />
     </Stack.Navigator>
   );
 };
@@ -21,6 +21,7 @@ const Favoris = () => {
   return (
     <Stack.Navigator>
       <Stack.Screen name="Favoris" component={Favorites} />
+      <Stack.Screen name="Film Details" component={FilmDetail} />
     </Stack.Navigator>
   );
 };

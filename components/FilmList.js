@@ -14,9 +14,8 @@ class FilmList extends React.Component {
   }
 
   _displayDetailForFilm = (idFilm) => {
-    console.log("Display film " + idFilm);
     // On a récupéré les informations de la navigation, on peut afficher le détail du film
-    this.props.navigation.navigate("Film Detail", { idFilm: idFilm });
+    this.props.navigation.navigate("Film Details", { idFilm: idFilm });
   };
 
   render() {
@@ -41,7 +40,10 @@ class FilmList extends React.Component {
         )}
         onEndReachedThreshold={0.5}
         onEndReached={() => {
-          if (this.props.page < this.props.totalPages) {
+          if (
+            !this.props.favoriteList &&
+            this.props.page < this.props.totalPages
+          ) {
             // On appelle la méthode loadFilm du component Search pour charger plus de films
             this.props.loadFilms();
           }

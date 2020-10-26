@@ -17,7 +17,7 @@ const FilmItem = ({ film, displayDetailForFilm, isFilmFavorite }) => {
       );
     }
   };
-  console.log(isFilmFavorite);
+
   return (
     <TouchableOpacity
       style={styles.main_container}
