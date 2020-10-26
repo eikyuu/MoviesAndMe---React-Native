@@ -17,6 +17,14 @@ const StackingSearch = () => {
   );
 };
 
+const Favoris = () => {
+  return (
+    <Stack.Navigator>
+      <Stack.Screen name="Favoris" component={Favorites} />
+    </Stack.Navigator>
+  );
+};
+
 const Navigation = () => {
   return (
     <Tab.Navigator
@@ -39,9 +47,14 @@ const Navigation = () => {
           }
         },
       })}
+      tabBarOptions={{
+        activeBackgroundColor: "#DDDDDD", // Couleur d'arrière-plan de l'onglet sélectionné
+        inactiveBackgroundColor: "#FFFFFF", // Couleur d'arrière-plan des onglets non sélectionnés
+        showLabel: false, // On masque les titres
+      }}
     >
       <Tab.Screen name="Rechercher" component={StackingSearch} />
-      <Tab.Screen name="Favoris" component={Favorites} />
+      <Tab.Screen name="Favoris" component={Favoris} />
     </Tab.Navigator>
   );
 };

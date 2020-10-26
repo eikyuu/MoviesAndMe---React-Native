@@ -4,12 +4,11 @@ import {
   View,
   TextInput,
   Button,
-  FlatList,
   ActivityIndicator,
 } from "react-native";
-import FilmItem from "./FilmItem";
 import { getFilmsFromApiWithSearchedText } from "../services/TMDApi";
 import { connect } from "react-redux";
+import FilmList from "./FilmList";
 
 class Search extends React.Component {
   constructor(props) {
@@ -21,6 +20,7 @@ class Search extends React.Component {
       films: [],
       isLoading: false,
     };
+    this._loadFilms = this._loadFilms.bind(this);
   }
 
   _loadFilms() {
@@ -81,29 +81,12 @@ class Search extends React.Component {
           onSubmitEditing={() => this._searchFilms()}
         />
         <Button title="Rechercher" onPress={() => this._searchFilms()} />
-        <FlatList
-          extraData={this.props.favoritesFilm}
-          data={this.state.films}
-          keyExtractor={(item) => item.id.toString()}
-          renderItem={({ item }) => (
-            <FilmItem
-              film={item}
-              isFilmFavorite={
-                this.props.favoritesFilm.findIndex(
-                  (film) => film.id === item.id
-                ) !== -1
-                  ? true
-                  : false
-              }
-              displayDetailForFilm={this._displayDetailForFilm}
-            />
-          )}
-          onEndReachedThreshold={0.5}
-          onEndReached={() => {
-            if (this.page < this.totalPages) {
-              this._loadFilms();
-            }
-          }}
+        <FilmList
+          films={this.state.films} // C'est bien le component Search qui récupère les films depuis l'API et on les transmet ici pour que le component FilmList les affiche
+          navigation={this.props.navigation} // Ici on transmet les informations de navigation pour permettre au component FilmList de naviguer vers le détail d'un film
+          loadFilms={this._loadFilms} // _loadFilm charge les films suivants, ça concerne l'API, le component FilmList va juste appeler cette méthode quand l'utilisateur aura parcouru tous les films et c'est le component Search qui lui fournira les films suivants
+          page={this.page}
+          totalPages={this.totalPages} // les infos page et totalPages vont être utile, côté component FilmList, pour ne pas déclencher l'évènement pour charger plus de film si on a atteint la dernière page
         />
         {this._displayLoading()}
       </View>
