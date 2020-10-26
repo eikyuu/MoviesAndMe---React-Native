@@ -1,7 +1,15 @@
 import moment from "moment";
 import numeral from "numeral";
 import React, { useEffect, useState } from "react";
-import { ActivityIndicator, Image, StyleSheet, Text, View } from "react-native";
+import {
+  ActivityIndicator,
+  Image,
+  Platform,
+  Share,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
 import { ScrollView, TouchableOpacity } from "react-native-gesture-handler";
 import { getFilmDetailFromApi } from "../services/TMDApi";
 import { connect } from "react-redux";
@@ -11,6 +19,27 @@ const FilmDetail = ({ dispatch, route, favoritesFilm }) => {
   const [film, setFilm] = useState(undefined);
 
   const id = route.params.idFilm;
+
+  const _shareFilm = () => {
+    Share.share({ title: film.title, message: film.overview });
+  };
+
+  const _displayFloatingActionButton = () => {
+    if (film != undefined && Platform.OS === "android") {
+      // Uniquement sur Android et lorsque le film est chargé
+      return (
+        <TouchableOpacity
+          style={styles.share_touchable_floatingactionbutton}
+          onPress={() => _shareFilm()}
+        >
+          <Image
+            style={styles.share_image}
+            source={require("../images/ic_share.png")}
+          />
+        </TouchableOpacity>
+      );
+    }
+  };
 
   const _loadFilm = async (id) => {
     try {
@@ -62,7 +91,9 @@ const FilmDetail = ({ dispatch, route, favoritesFilm }) => {
           >
             {_displayFavoriteImage()}
           </TouchableOpacity>
+
           <Text style={styles.description_text}>{film.overview}</Text>
+
           <Text style={styles.default_text}>
             Sorti le {moment(new Date(film.release_date)).format("DD/MM/YYYY")}
           </Text>
@@ -100,6 +131,7 @@ const FilmDetail = ({ dispatch, route, favoritesFilm }) => {
     <View style={styles.main_container}>
       {_displayLoading()}
       {_displayFilm()}
+      <View style={{ width: 60 }}>{_displayFloatingActionButton()}</View>
     </View>
   );
 };
@@ -125,7 +157,6 @@ const styles = StyleSheet.create({
     margin: 5,
   },
   title_text: {
-    textAlign: "center",
     fontWeight: "bold",
     fontSize: 35,
     flex: 1,
@@ -135,6 +166,10 @@ const styles = StyleSheet.create({
     marginTop: 10,
     marginBottom: 10,
     color: "#000000",
+    textAlign: "center",
+  },
+  favorite_container: {
+    alignItems: "center",
   },
   description_text: {
     fontStyle: "italic",
@@ -147,13 +182,21 @@ const styles = StyleSheet.create({
     marginRight: 5,
     marginTop: 5,
   },
-  favorite_container: {
-    alignItems: "center",
-  },
-
   favorite_image: {
     width: 40,
     height: 40,
+  },
+  share_touchable_floatingactionbutton: {
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    backgroundColor: "#e91e63",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  share_image: {
+    width: 30,
+    height: 30,
   },
 });
 
