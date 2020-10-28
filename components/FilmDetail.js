@@ -13,6 +13,7 @@ import {
 import { ScrollView, TouchableOpacity } from "react-native-gesture-handler";
 import { getFilmDetailFromApi } from "../services/TMDApi";
 import { connect } from "react-redux";
+import EnlargeShrink from "../animations/EnlargeShrink";
 
 const FilmDetail = ({ dispatch, route, favoritesFilm }) => {
   const [isLoading, setIsLoading] = useState(true);
@@ -57,11 +58,17 @@ const FilmDetail = ({ dispatch, route, favoritesFilm }) => {
 
   const _displayFavoriteImage = () => {
     let sourceImage = require("../images/ic_favorite_border.png");
+    let shouldEnLarge = true;
     if (favoritesFilm.findIndex((item) => item.id === film.id) !== -1) {
       // Film dans nos favoris
       sourceImage = require("../images/ic_favorite.png");
+      shouldEnLarge = false;
     }
-    return <Image style={styles.favorite_image} source={sourceImage} />;
+    return (
+      <EnlargeShrink shouldEnLarge={shouldEnLarge}>
+        <Image source={sourceImage} style={styles.favorite_image} />
+      </EnlargeShrink>
+    );
   };
 
   const _displayLoading = () => {
@@ -184,8 +191,9 @@ const styles = StyleSheet.create({
     marginTop: 5,
   },
   favorite_image: {
-    width: 40,
-    height: 40,
+    flex: 1,
+    width: null,
+    height: null,
   },
   share_touchable_floatingactionbutton: {
     width: 60,
