@@ -85,12 +85,14 @@ const FilmDetail = ({ dispatch, route, favoritesFilm }) => {
             }}
           />
           <Text style={styles.title_text}>{film.title}</Text>
+
           <TouchableOpacity
             style={styles.favorite_container}
             onPress={() => dispatch({ type: "TOGGLE_FAVORITE", value: film })}
           >
             {_displayFavoriteImage()}
           </TouchableOpacity>
+          {_displayFloatingActionButton()}
 
           <Text style={styles.description_text}>{film.overview}</Text>
 
@@ -131,7 +133,6 @@ const FilmDetail = ({ dispatch, route, favoritesFilm }) => {
     <View style={styles.main_container}>
       {_displayLoading()}
       {_displayFilm()}
-      <View style={{ width: 60 }}>{_displayFloatingActionButton()}</View>
     </View>
   );
 };
